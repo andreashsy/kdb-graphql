@@ -1,5 +1,33 @@
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
+import WebSocket from 'ws';
+import { setTimeout } from 'timers/promises';
+
+let book = [
+    {
+      title: 'init',
+      author: 'init',
+    }
+  ]
+
+// Websocket code
+const ws = new WebSocket('ws://localhost:5001');
+
+ws.on('open', () => {
+  console.log('Connected to server');
+});
+
+ws.on('message', (message: string) => {
+  book = JSON.parse(message);
+
+  console.log(`Received message from server: ${message}`);
+  console.log(book);
+});
+
+ws.on('close', () => {
+  console.log('Disconnected from server');
+});
+
 
 // A schema is a collection of type definitions (hence "typeDefs")
 // that together define the "shape" of queries that are executed against
@@ -22,27 +50,41 @@ const typeDefs = `#graphql
 `;
 
 
-const books = [
-    {
-      title: 'The Awakening',
-      author: 'Kate Chopin',
-    },
-    {
-      title: 'City of Glass',
-      author: 'Paul Auster',
-    },
-    {
-        title: 'City of Glass 2',
-        author: 'Paul Auster 2',
-      },
-  ];
+// const books = [
+//     {
+//       title: 'The Awakening',
+//       author: 'Kate Chopin',
+//     },
+//     {
+//       title: 'City of Glass',
+//       author: 'Paul Auster',
+//     },
+//     {
+//         title: 'City of Glass 2',
+//         author: 'Paul Auster 2',
+//     },
+// ];
+
+
+// function getBooks(): Array<{title: string, author: string}> {
+async function getBooks(): Promise<any> {
+    console.log('sending message!');
+    ws.send("books");
+    
+    await setTimeout(50);
+
+    console.log('returning!');
+    return book;
+    
+}
 
 
 // Resolvers define how to fetch the types defined in your schema.
 // This resolver retrieves books from the "books" array above.
 const resolvers = {
     Query: {
-      books: () => books,
+    //   books: () => books,
+      books: async () => await getBooks(),
     },
   };
 
@@ -61,5 +103,4 @@ const server = new ApolloServer({
   const { url } = await startStandaloneServer(server, {
     listen: { port: 4000 },
   });
-  
   console.log(`🚀  Server ready at: ${url}`);

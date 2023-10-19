@@ -14,18 +14,18 @@ let book = [
 const ws = new WebSocket('ws://localhost:5001');
 
 ws.on('open', () => {
-  console.log('Connected to server');
+  console.log('Connected to kdb server');
 });
 
 ws.on('message', (message: string) => {
   book = JSON.parse(message);
 
-  console.log(`Received message from server: ${message}`);
+  console.log(`Received message from kdb server: ${message}`);
   console.log(book);
 });
 
 ws.on('close', () => {
-  console.log('Disconnected from server');
+  console.log('Disconnected from kdb server');
 });
 
 
@@ -103,4 +103,4 @@ const server = new ApolloServer({
   const { url } = await startStandaloneServer(server, {
     listen: { port: 4000 },
   });
-  console.log(`🚀  Server ready at: ${url}`);
+  console.log(`🚀 Node Server ready at: ${url}`);

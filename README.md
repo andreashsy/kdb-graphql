@@ -1,0 +1,1 @@
+# Demo on how GraphQL can work with native kdb+ instance

@@ -1,4 +1,4 @@
-# Demo on how GraphQL can work with native kdb+ instance
+# Quick and dirty demo on how GraphQL can work with native kdb+ instance
 ## Installation
 ### Start kdb Backend
 1. Download and install kdb
